@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+font-family:'Poppins',sans-serif;
+background:linear-gradient(135deg,#0f172a,#020617);
+color:white;
+transition:0.4s;
+}
+
+/* LIGHT MODE */
+body.light{
+background:#f1f5f9;
+color:#111;
+}
+
+/* SIDEBAR */
+.sidebar{
+width:230px;
+height:100vh;
+position:fixed;
+background:linear-gradient(180deg,#020617,#1e293b);
+padding:20px;
+box-shadow:4px 0 20px rgba(0,0,0,0.5);
+transition:0.4s;
+}
+
+body.light .sidebar{
+background:#e2e8f0;
+}
+
+.sidebar h2{
+text-align:center;
+margin-bottom:30px;
+color:#38bdf8;
+}
+
+body.light .sidebar h2{
+color:#0f172a;
+}
+
+.sidebar a{
+display:block;
+color:white;
+margin:15px 0;
+text-decoration:none;
+padding:10px;
+border-radius:8px;
+transition:0.3s;
+}
+
+body.light .sidebar a{
+color:#111;
+}
+
+.sidebar a:hover{
+background:#38bdf8;
+color:black;
+transform:translateX(8px);
+}
+
+/* CONTENT */
+.content{
+margin-left:250px;
+padding:30px;
+}
+
+/* TOP BAR */
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+}
+
+.toggle{
+background:#38bdf8;
+border:none;
+padding:10px 15px;
+border-radius:20px;
+cursor:pointer;
+font-weight:bold;
+}
+
+/* MENU CARDS (YOUR GLOW UI) */
+.cards{
+display:flex;
+gap:20px;
+flex-wrap:wrap;
+}
+
+.card{
+background:linear-gradient(145deg,#1e293b,#0f172a);
+padding:25px;
+width:250px;
+border-radius:15px;
+box-shadow:0 10px 25px rgba(0,0,0,0.5);
+transition:0.3s;
+cursor:pointer;
+position:relative;
+overflow:hidden;
+}
+
+body.light .card{
+background:white;
+color:black;
+}
+
+.card:hover{
+transform:translateY(-10px) scale(1.05);
+box-shadow:0 20px 40px rgba(0,0,0,0.7);
+}
+
+.card:active{
+transform:scale(0.95);
+}
+
+.card::before{
+content:"";
+position:absolute;
+width:200%;
+height:200%;
+background:linear-gradient(120deg,transparent,#38bdf8,transparent);
+transform:rotate(25deg);
+top:-100%;
+left:-100%;
+transition:0.5s;
+}
+
+.card:hover::before{
+top:100%;
+left:100%;
+}
+
+/* USER SECTION */
+.user-main-card{
+margin-top:40px;
+}
+
+/* USER LIST */
+#userList{
+display:none;
+margin-top:15px;
+}
+
+/* USER BOX */
+.user-box{
+background:#1e293b;
+padding:15px;
+border-radius:10px;
+margin-bottom:10px;
+border-left:4px solid #38bdf8;
+transition:0.3s;
+}
+
+body.light .user-box{
+background:white;
+color:black;
+}
+
+.user-box:hover{
+transform:scale(1.02);
+}
+
+/* DELETE BUTTON */
+.delete-btn{
+margin-top:8px;
+padding:6px 10px;
+border:none;
+border-radius:6px;
+background:red;
+color:white;
+cursor:pointer;
+}
+
+/* SEARCH */
+#search{
+margin-top:20px;
+padding:10px;
+width:250px;
+border-radius:8px;
+border:none;
+outline:none;
+}
+
+/* SIDEBAR COLLAPSE STATE */
+.sidebar{
+left:0;
+transition:0.4s ease;
+}
+
+/* CLOSED SIDEBAR */
+.sidebar.close{
+transform:translateX(-100%);
+}
+
+/* CONTENT SHIFT */
+.content{
+margin-left:250px;
+transition:0.4s ease;
+}
+
+.content.full{
+margin-left:20px;
+}
+
+/* FLOATING MENU BUTTON */
+.open-float{
+position:fixed;
+top:20px;
+left:20px;
+z-index:999;
+width:45px;
+height:45px;
+border:none;
+border-radius:50%;
+background:linear-gradient(135deg,#38bdf8,#0ea5e9);
+color:white;
+font-size:22px;
+cursor:pointer;
+box-shadow:0 0 15px rgba(56,189,248,0.6);
+display:block;   /* ✅ FIXED (was none) */
+transition:0.3s;
+}
+</style>
+</head>
+
+<body>
+<button id="openBtn" class="open-float" onclick="toggleSidebar()">
+☰ 
+</button>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+<h2>⚡ Smart AI</h2>
+<a href="/dashboard">🏠 Dashboard</a>
+<a href="/register">👤 Register User</a>
+<a href="/attendance_page">📸 Take Attendance</a>
+<a href="/history">📊 History</a>
+<a href="/logout">🚪 Logout</a>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+<div class="topbar">
+<h1>Welcome 👋</h1>
+<button class="toggle" onclick="document.body.classList.toggle('light')">🌙 Mode</button>
+</div>
+
+<!-- MAIN CARDS -->
+<div class="cards">
+
+<div class="card" onclick="location.href='/register'">
+<h3>👤 Register User</h3>
+<p>Add new face data</p>
+</div>
+
+<div class="card" onclick="location.href='/attendance_page'">
+<h3>📸 Take Attendance</h3>
+<p>Start recognition</p>
+</div>
+
+<div class="card" onclick="location.href='/history'">
+<h3>📊 View Reports</h3>
+<p>Check logs</p>
+</div>
+
+</div>
+
+<!-- USER SECTION -->
+<div class="user-main-card">
+
+<h2>👥 Registered Users</h2>
+
+<!-- SINGLE TOGGLE CARD -->
+<div class="card" onclick="toggleUsers()">
+<h3>👤 Users</h3>
+<p id="userCount">Click to view users</p>
+</div>
+
+<!-- USER LIST -->
+<div id="userList">
+
+{% for u in users %}
+<div class="user-box">
+
+<h3>{{u.username}}</h3>
+<p>Dept: {{u.dept}}</p>
+
+<button class="delete-btn" onclick="event.stopPropagation(); deleteUser('{{u.username}}')">
+Delete
+</button>
+
+</div>
+{% endfor %}
+
+</div>
+
+</div>
+
+</div>
+<script>
+
+/* TOGGLE USER LIST */
+function toggleUsers(){
+let list = document.getElementById("userList");
+list.style.display = (list.style.display === "block") ? "none" : "block";
+}
+
+/* SET USER COUNT */
+document.addEventListener("DOMContentLoaded", function(){
+document.getElementById("userCount").innerText =
+"Total Users: {{users|length}}";
+});
+
+/* DELETE USER (FIXED) */
+function deleteUser(name){
+
+    if(!confirm("Are you sure to delete " + name + "?")) return;
+
+    fetch("/delete_user", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "name=" + encodeURIComponent(name)
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.status === "success"){
+            alert("✅ User deleted");
+            location.reload(true);
+        } else {
+            alert("❌ Delete failed");
+        }
+    })
+    .catch(err => {
+        console.log(err);
+        alert("❌ Server error");
+    });
+}
+
+function toggleSidebar(){
+    document.querySelector(".sidebar").classList.toggle("close");
+    document.querySelector(".content").classList.toggle("full");
+}	
+</script>
+</body>
+</html>

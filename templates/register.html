@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Register User</title>
+
+<style>
+body{
+    background:#0a0f1c;
+    color:white;
+    font-family:sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    flex-direction:column;
+}
+
+.container{
+    background:#111827;
+    padding:25px;
+    border-radius:15px;
+    text-align:center;
+    width:350px;
+    position:relative;
+    overflow:hidden;
+}
+
+.container::before{
+    content:"";
+    position:absolute;
+    width:200%;
+    height:200%;
+    background:linear-gradient(120deg,transparent,#064f6c,transparent);
+    top:-100%;
+    left:-100%;
+    transition:0.6s;
+}
+
+.container:hover::before{
+    top:100%;
+    left:100%;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border:none;
+    border-radius:8px;
+    outline:none;
+}
+
+video{
+    width:100%;
+    margin-top:15px;
+    border-radius:10px;
+    border:2px solid #38bdf8;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    margin-top:15px;
+    background:#38bdf8;
+    border:none;
+    color:white;
+    border-radius:25px;
+    cursor:pointer;
+    transition:0.3s;
+    position:relative;
+    overflow:hidden;
+}
+
+button:hover{
+    transform:translateY(-3px) scale(1.03);
+}
+
+button:active{
+    transform:scale(0.9);
+}
+
+button::before{
+    content:"";
+    position:absolute;
+    width:200%;
+    height:200%;
+    background:linear-gradient(120deg,transparent,#fff,transparent);
+    top:-100%;
+    left:-100%;
+    transition:0.5s;
+}
+
+button:hover::before{
+    top:100%;
+    left:100%;
+}
+
+#msg{
+    margin-top:10px;
+    color:#22c55e;
+    font-size:14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Register User</h2>
+
+<input id="name" placeholder="Name">
+<input id="dept" placeholder="Department">
+
+<!-- ✅ CHANGED EMAIL → REG NO -->
+<input id="regno" name="regno" placeholder="Register Number">
+
+<video id="video" autoplay></video>
+
+<button onclick="save()">📸 Capture & Save</button>
+
+<p id="msg"></p>
+
+</div>
+
+<script>
+
+const v = document.getElementById("video");
+
+navigator.mediaDevices.getUserMedia({video:true})
+.then(s=>v.srcObject=s)
+.catch(()=>alert("Camera not allowed"));
+
+function save(){
+
+let name = document.getElementById("name").value.trim().toLowerCase();
+let dept = document.getElementById("dept").value;
+let regno = document.getElementById("regno").value.trim();
+
+if(!name || !dept || !regno){
+    alert("Enter all details including Register Number");
+    return;
+}
+
+let c = document.createElement("canvas");
+c.width = 300;
+c.height = 300;
+
+c.getContext("2d").drawImage(v, 0, 0, 300, 300);
+
+const image = c.toDataURL("image/jpeg", 0.5);
+
+fetch("/save_user",{
+method:"POST",
+headers:{"Content-Type":"application/x-www-form-urlencoded"},
+body: new URLSearchParams({
+    name: name,
+    dept: dept,
+    regno: regno,
+    image: image
+})
+})
+.then(res => res.json())
+.then(data => {
+
+    let msg = document.getElementById("msg");
+    msg.innerText = data.msg;
+
+    if(data.status === "exists"){
+        msg.style.color = "orange";
+    }
+    else if(data.status === "success"){
+        msg.style.color = "#22c55e";
+    }
+
+})
+.catch(err => {
+    console.error(err);
+    let msg = document.getElementById("msg");
+    msg.innerText = "❌ Server error!";
+    msg.style.color = "red";
+});
+
+}
+
+</script>
+</body>
+</html>

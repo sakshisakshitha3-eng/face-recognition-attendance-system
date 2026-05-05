@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Login</title>
+
+<style>
+body{
+    background:#0a0f1c;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    font-family:sans-serif;
+}
+
+/* CARD */
+.card{
+    background:#111827;
+    padding:30px;
+    border-radius:15px;
+    width:300px;
+    position:relative;
+    overflow:hidden;
+    transition:0.3s;
+}
+
+/* GLOW EFFECT */
+.card::before{
+    content:"";
+    position:absolute;
+    width:200%;
+    height:200%;
+    background:linear-gradient(120deg,transparent,#38bdf8,transparent);
+    top:-100%;
+    left:-100%;
+    transition:0.6s;
+}
+
+.card:hover::before{
+    top:100%;
+    left:100%;
+}
+
+/* HOVER LIFT */
+.card:hover{
+    transform:translateY(-5px);
+}
+
+/* INPUT */
+input{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border:none;
+    border-radius:8px;
+    outline:none;
+}
+
+/* BUTTON */
+button{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    background:#38bdf8;
+    border:none;
+    color:white;
+    border-radius:25px;
+    cursor:pointer;
+    transition:0.3s;
+    position:relative;
+    overflow:hidden;
+}
+
+/* BUTTON HOVER */
+button:hover{
+    transform:translateY(-3px) scale(1.03);
+    box-shadow:0 10px 25px rgba(0,0,0,0.5);
+}
+
+/* BUTTON CLICK */
+button:active{
+    transform:scale(0.9);
+}
+
+/* BUTTON GLOW */
+button::before{
+    content:"";
+    position:absolute;
+    width:200%;
+    height:200%;
+    background:linear-gradient(120deg,transparent,#fff,transparent);
+    top:-100%;
+    left:-100%;
+    transition:0.5s;
+}
+
+button:hover::before{
+    top:100%;
+    left:100%;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+<h2>Login</h2>
+
+<form method="POST">
+<input name="username" placeholder="Username" required>
+<input type="password" name="password" placeholder="Password" required>
+<button>Login</button>
+</form>
+
+{% if error %}
+<p style="color:red;">{{error}}</p>
+{% endif %}
+
+</div>
+
+</body>
+</html>
