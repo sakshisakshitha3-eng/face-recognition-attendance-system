@@ -46,7 +46,9 @@ def train_model():
         if img is None:
             continue
 
-        img = cv2.resize(img, (150, 150))
+        # 🔥 IMPROVED PREPROCESSING
+        img = cv2.resize(img, (200, 200))
+        img = cv2.equalizeHist(img)
 
         faces.append(img)
         labels.append(label_map[name])
@@ -115,6 +117,7 @@ def save_user():
 # ---------- ATTENDANCE ----------
 @app.route("/attendance", methods=["POST"])
 def attendance():
+
     name = request.form.get("name")
 
     if not name or name == "None":
@@ -131,8 +134,6 @@ def attendance():
 
     return jsonify({"msg": f"Attendance marked for {name}"})
 
-
-# ---------- FIX ROUTE ERROR (IMPORTANT) ----------
 @app.route("/take_attendance", methods=["POST"])
 def take_attendance():
     return attendance()
@@ -141,7 +142,7 @@ def take_attendance():
 def attendance_page():
     return render_template("attendance.html")
 
-# ---------- RECOGNIZE ----------
+# ---------- RECOGNIZE (🔥 FIXED CORE) ----------
 @app.route("/recognize", methods=["POST"])
 def recognize():
     try:
@@ -154,8 +155,13 @@ def recognize():
 
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-        face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
-        faces = face_cascade.detectMultiScale(gray, 1.05, 5, minSize=(80,80))
+        face_cascade = cv2.CascadeClassifier(
+            cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
+        )
+
+        faces = face_cascade.detectMultiScale(
+            gray, scaleFactor=1.1, minNeighbors=5, minSize=(80,80)
+        )
 
         if len(faces) == 0:
             return jsonify({"name": None})
@@ -169,18 +175,27 @@ def recognize():
         labels = json.load(open("trainer/labels.json"))
         labels = {v:k for k,v in labels.items()}
 
+        best_name = None
+        best_conf = 999
+
         for (x,y,w,h) in faces:
-            face = cv2.resize(gray[y:y+h, x:x+w], (150,150))
+
+            face = gray[y:y+h, x:x+w]
+
+            # 🔥 STRONG FIX (VERY IMPORTANT)
+            face = cv2.equalizeHist(face)
+            face = cv2.resize(face, (200,200))
 
             label, conf = model.predict(face)
 
-            # 🔥 FINAL SAFE THRESHOLD
-            if conf < 110:
-                name = labels.get(label)
-                if name:
-                    return jsonify({"name": name})
+            print("DEBUG -> Label:", label, "Conf:", conf)
 
-        return jsonify({"name": None})
+            # 🔥 IMPROVED THRESHOLD
+            if conf < best_conf and conf < 85:
+                best_conf = conf
+                best_name = labels.get(label)
+
+        return jsonify({"name": best_name})
 
     except Exception as e:
         print("ERROR:", e)
@@ -189,6 +204,7 @@ def recognize():
 # ---------- DELETE ----------
 @app.route("/delete_user", methods=["POST"])
 def delete_user():
+
     name = request.form.get("name")
 
     users = load_users()
@@ -205,6 +221,7 @@ def delete_user():
 # ---------- HISTORY ----------
 @app.route("/history")
 def history():
+
     import csv
 
     data = []
@@ -233,5 +250,5 @@ def logout():
 
 # ---------- RUN ----------
 if __name__ == "__main__":
-    print("🚀 FINAL STABLE SYSTEM RUNNING")
+    print("🚀 FIXED FACE RECOGNITION SYSTEM RUNNING")
     app.run(debug=True)
